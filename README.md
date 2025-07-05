@@ -141,6 +141,55 @@ vibe-spongebob-todo/
 - `DELETE /todos/{todo_id}` - Delete todo
 - `GET /calendar` - Calendar view
 
+## 📬 Automated Daily Summary Emails (Zapier Integration)
+
+You can automate daily (or weekly) summary emails for all users using Zapier and the built-in API endpoint:
+
+### API Endpoint
+- `GET /api/zapier-daily-summary` — Returns, for each user:
+  - Tasks due today
+  - Tasks due within the next 7 days
+  - Total todos
+  - Completed todos
+  - Completion rate
+
+### How to Use with Zapier
+1. **Expose your app to the internet** (if running locally, use [ngrok](https://ngrok.com/)):
+   ```bash
+   ngrok http 8000
+   ```
+2. **In Zapier:**
+   - Trigger: "Schedule by Zapier" (every day)
+   - Action: "Webhooks by Zapier" (GET your `/api/zapier-daily-summary` endpoint)
+   - Action: "Looping by Zapier" (for each user in the response)
+   - Action: "Gmail/Email by Zapier" (send summary to each user)
+
+### Example Email Format
+```
+Subject: ToDo Summary - {date}
+
+Hi {user_name},
+
+Here is your ToDo summary for {date}:
+
+✅ Tasks due today:
+- ...
+
+📅 Tasks due within 7 days:
+- ... (due ...)
+
+📊 Summary:
+- Total ToDos: ...
+- Completed: ...
+- Completion rate: ...%
+
+Keep up the good work!
+
+— Your ToDo Assistant
+```
+
+See `ZAPIER_SETUP.md` for a full step-by-step guide.
+
 ## 🐛 Troubleshooting
 
 ### Common Issues
