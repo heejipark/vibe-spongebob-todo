@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar - SpongeTodo{% endblock %}
+
+{% block content %}
+<style>
+.spongebob-bg {
+    background: linear-gradient(135deg, #FFFDE4 0%, #B3E5FC 100%);
+    border-radius: 22px;
+    box-shadow: 0 4px 24px 0 rgba(255,235,59,0.18);
+}
+body.dark-mode .spongebob-bg {
+    background: linear-gradient(135deg, #0a2342 0%, #00B8D4 100%);
+}
+.bubbly-card {
+    border: 4px dotted var(--bubble);
+    border-radius: 22px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 8px 0 rgba(255,235,59,0.08);
+}
+.calendar-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    gap: 1.5rem;
+}
+.spongebob-nav-btn {
+    background: #ffe066;
+    color: #222;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+    font-family: 'Fredoka One', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px 0 rgba(255,235,59,0.12);
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    cursor: pointer;
+}
+.spongebob-nav-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border: 2px solid #ffe066;
+}
+#currentMonthLabel {
+    font-size: 1.5rem;
+    font-family: 'Fredoka One', sans-serif;
+    color: var(--accent);
+    letter-spacing: 1px;
+    min-width: 180px;
+    text-align: center;
+}
+.calendar-container {
+    background: var(--background);
+    border-radius: 18px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.07);
+    padding-bottom: 0.5rem;
+}
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #ffe066;
+    color: #222;
+    font-family: 'Fredoka One', sans-serif;
+    border-radius: 18px 18px 0 0;
+    border-bottom: 3px dotted var(--bubble);
+    margin-bottom: 0;
+}
+body.dark-mode .calendar-header {
+    background: #FBC02D;
+    color: #0a2342;
+    border-bottom: 3px dotted #00B8D4;
+}
+.calendar-day-header {
+    padding: 12px 0 10px 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'Fredoka One',sans-serif;
+    letter-spacing: 1px;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: transparent;
+    border-radius: 0 0 18px 18px;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+}
+.calendar-day {
+    min-height: 90px;
+    border: 2px dotted var(--bubble);
+    padding: 6px;
+    position: relative;
+    background: #16335B;
+    border-radius: 14px;
+    transition: box-shadow 0.2s;
+    font-family: 'Fredoka One',sans-serif;
+    color: #ffe066;
+    font-size: 1.1rem;
+    box-shadow: 0 1px 4px 0 rgba(255,235,59,0.07);
+}
+body.dark-mode .calendar-day {
+    background: #0a2342;
+    color: #ffe066;
+    border: 2px dotted #00B8D4;
+}
+.calendar-day.today {
+    background: #FFEB3B !important;
+    color: #222 !important;
+    border: 3px solid #FF4081 !important;
+    box-shadow: 0 0 0 4px #fff0f5;
+    position: relative;
+}
+body.dark-mode .calendar-day.today {
+    background: #FFEB3B !important;
+    color: #222 !important;
+    border: 3px solid #FF4081 !important;
+    box-shadow: 0 0 0 4px #0a2342;
+}
+.calendar-date {
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: inherit;
+    font-size: 1.1rem;
+    font-family: 'Fredoka One',sans-serif;
+}
+.calendar-day.other-month {
+    background: #b3e5fc;
+    color: #bdbdbd;
+    opacity: 0.6;
+}
+body.dark-mode .calendar-day.other-month {
+    background: #16335B;
+    color: #444;
+}
+.todo-item-calendar {
+    font-size: 1.1rem;
+    padding: 4px 8px;
+    margin: 3px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-left: 6px solid var(--accent);
+    background: #ffe066;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 4px 0 rgba(255,235,59,0.07);
+    font-weight: 600;
+    color: #222;
+    font-family: 'Fredoka One',sans-serif;
+    transition: background 0.2s, border-left-color 0.2s;
+}
+body.dark-mode .todo-item-calendar {
+    border-left: 6px solid #FFEB3B;
+    background: #FBC02D;
+    color: #0a2342;
+}
+.todo-item-calendar.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+    background: #b3e5fc;
+    color: #888;
+    position: relative;
+}
+body.dark-mode .todo-item-calendar.completed {
+    background: #16335B;
+    color: #b3e5fc;
+}
+.todo-icon {
+    margin-right: 8px;
+    font-size: 1.4rem;
+}
+</style>
+<div class="row">
+    <div class="col-12">
+        <div class="card spongebob-bg p-4 mb-4 bubbly-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold mb-0" style="color:var(--primary);font-family:'Fredoka One',sans-serif;">
+                    <span style="font-size:2rem;">🧽</span> Calendar
+                </h2>
+                <a href="/todos" class="btn btn-outline-primary spongebob-btn">
+                    <i class="fa-solid fa-list-check me-1"></i>List View
+                </a>
+            </div>
+            <div class="calendar-nav">
+                <button class="spongebob-nav-btn" id="prevMonthBtn" title="Previous Month">&#8592;</button>
+                <span id="currentMonthLabel"></span>
+                <button class="spongebob-nav-btn" id="nextMonthBtn" title="Next Month">&#8594;</button>
+            </div>
+            <div class="calendar-container bubbly-card" style="background:var(--background);border-radius:16px;">
+                <div class="calendar-header">
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+let currentDate = new Date();
+let todos = {{ todos | tojson }};
+function renderCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    // Update month label
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    document.getElementById('currentMonthLabel').textContent = `${monthNames[month]} ${year}`;
+    const firstDay = new Date(year, month, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    const calendarGrid = document.getElementById('calendarGrid');
+    calendarGrid.innerHTML = '';
+    for (let i = 0; i < 42; i++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i);
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        if (date.getMonth() !== month) {
+            dayElement.classList.add('other-month');
+        }
+        if (date.toDateString() === new Date().toDateString()) {
+            dayElement.classList.add('today');
+        }
+        const dateElement = document.createElement('div');
+        dateElement.className = 'calendar-date';
+        dateElement.textContent = date.getDate();
+        dayElement.appendChild(dateElement);
+        const dateStr = date.toISOString().split('T')[0];
+        const dayTodos = todos.filter(todo => todo.deadline === dateStr);
+        dayTodos.forEach(todo => {
+            const todoElement = document.createElement('div');
+            todoElement.className = `todo-item-calendar ${todo.completed ? 'completed' : ''}`;
+            let borderColor = 'var(--accent)';
+            if (todo.priority === 'P0') borderColor = '#FFEB3B';
+            if (todo.priority === 'P1') borderColor = '#2196F3';
+            if (todo.priority === 'P2') borderColor = '#FF4081';
+            if (todo.priority === 'P3') borderColor = '#00B8D4';
+            todoElement.style.borderLeftColor = borderColor;
+            const icon = todo.icon || '📝';
+            todoElement.innerHTML = `<span class=\"todo-icon\">${icon}</span>${todo.title}`;
+            todoElement.title = `${todo.title}${todo.description ? ' - ' + todo.description : ''}`;
+            todoElement.onclick = () => {
+                window.location.href = `/todos/${todo.id}/edit`;
+            };
+            dayElement.appendChild(todoElement);
+        });
+        calendarGrid.appendChild(dayElement);
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    renderCalendar();
+    document.getElementById('prevMonthBtn').onclick = function() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    };
+    document.getElementById('nextMonthBtn').onclick = function() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    };
+});
+</script>
+{% endblock %} 

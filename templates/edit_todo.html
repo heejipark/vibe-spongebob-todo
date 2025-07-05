@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Todo - Todo App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-edit text-primary me-2"></i>Edit Todo
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/todos/{{ todo.id }}/edit">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="title" class="form-label">Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ todo.title }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="icon" class="form-label">Icon</label>
+                            <select class="form-select" id="icon" name="icon">
+                                <option value="">📝 Default</option>
+                                <option value="💼" {% if todo.icon == "💼" %}selected{% endif %}>💼 Work</option>
+                                <option value="🏠" {% if todo.icon == "🏠" %}selected{% endif %}>🏠 Home</option>
+                                <option value="🎯" {% if todo.icon == "🎯" %}selected{% endif %}>🎯 Goal</option>
+                                <option value="📚" {% if todo.icon == "📚" %}selected{% endif %}>📚 Study</option>
+                                <option value="🏃" {% if todo.icon == "🏃" %}selected{% endif %}>🏃 Exercise</option>
+                                <option value="🛒" {% if todo.icon == "🛒" %}selected{% endif %}>🛒 Shopping</option>
+                                <option value="💰" {% if todo.icon == "💰" %}selected{% endif %}>💰 Finance</option>
+                                <option value="🎨" {% if todo.icon == "🎨" %}selected{% endif %}>🎨 Creative</option>
+                                <option value="🔧" {% if todo.icon == "🔧" %}selected{% endif %}>🔧 Maintenance</option>
+                                <option value="📞" {% if todo.icon == "📞" %}selected{% endif %}>📞 Call</option>
+                                <option value="✈️" {% if todo.icon == "✈️" %}selected{% endif %}>✈️ Travel</option>
+                                <option value="🎉" {% if todo.icon == "🎉" %}selected{% endif %}>🎉 Event</option>
+                                <option value="💡" {% if todo.icon == "💡" %}selected{% endif %}>💡 Idea</option>
+                                <option value="⚠️" {% if todo.icon == "⚠️" %}selected{% endif %}>⚠️ Important</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="priority" class="form-label">Priority</label>
+                            <select class="form-select" id="priority" name="priority">
+                                <option value="">No Priority</option>
+                                <option value="P0" {% if todo.priority and todo.priority.value == "P0" %}selected{% endif %}>P0 - Critical</option>
+                                <option value="P1" {% if todo.priority and todo.priority.value == "P1" %}selected{% endif %}>P1 - High</option>
+                                <option value="P2" {% if todo.priority and todo.priority.value == "P2" %}selected{% endif %}>P2 - Medium</option>
+                                <option value="P3" {% if todo.priority and todo.priority.value == "P3" %}selected{% endif %}>P3 - Low</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="deadline" class="form-label">Deadline</label>
+                            <input type="date" class="form-control" id="deadline" name="deadline" value="{{ todo.deadline or '' }}" min="{{ now }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3">{{ todo.description or '' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/todos" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Todos
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

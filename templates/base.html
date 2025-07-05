@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SpongeTodo{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFEB3B;
+            --primary-dark: #FBC02D;
+            --secondary: #2196F3;
+            --accent: #FF4081;
+            --background: #FFFDE4;
+            --card-bg: #FFF9C4;
+            --text: #222;
+            --muted: #888;
+            --bubble: #B3E5FC;
+            --shadow: 0 4px 24px 0 rgba(255,235,59,0.18);
+        }
+        body.dark-mode {
+            --background: #0a2342;
+            --card-bg: #16335B;
+            --primary: #FFEB3B;
+            --primary-dark: #FBC02D;
+            --secondary: #00B8D4;
+            --accent: #FF4081;
+            --text: #fffde4;
+            --muted: #b3e5fc;
+            --bubble: #00B8D4;
+            --shadow: 0 4px 24px 0 rgba(33,150,243,0.18);
+        }
+        body {
+            background: linear-gradient(135deg, var(--background) 0%, var(--bubble) 100%);
+            min-height: 100vh;
+            font-family: 'Fredoka One', 'Segoe UI', Arial, sans-serif;
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .card {
+            border: none;
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            background: var(--card-bg);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .btn-primary, .btn-primary:focus {
+            background: var(--primary);
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            color: #222;
+            font-family: 'Fredoka One', sans-serif;
+            letter-spacing: 1px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            color: var(--accent);
+        }
+        .btn-outline-primary {
+            border-radius: 999px;
+            font-weight: 600;
+            color: var(--primary);
+            border-color: var(--primary);
+            font-family: 'Fredoka One', sans-serif;
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: var(--accent);
+        }
+        .navbar {
+            background: var(--card-bg) !important;
+            box-shadow: 0 2px 8px 0 rgba(255,235,59,0.08);
+            border-bottom: 4px dotted var(--accent);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 2rem;
+            color: var(--primary) !important;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            font-family: 'Fredoka One', sans-serif;
+        }
+        .navbar-brand .spongebob {
+            font-size: 2.2rem;
+            margin-right: 0.5em;
+            filter: drop-shadow(0 2px 2px #fbc02d);
+        }
+        .navbar-brand span {
+            color: var(--accent);
+        }
+        .dark-toggle {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-left: 1.5em;
+            transition: color 0.2s;
+        }
+        .dark-toggle:hover {
+            color: var(--secondary);
+        }
+        .form-control, .form-select {
+            border-radius: 16px;
+            border: 2px solid var(--bubble);
+            background: var(--card-bg);
+            color: var(--text);
+            font-family: 'Fredoka One', sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--bubble);
+        }
+        .container {
+            max-width: 950px;
+        }
+        .shadow-sm {
+            box-shadow: 0 2px 8px 0 rgba(255,235,59,0.08) !important;
+        }
+        /* Bubbly border for fun */
+        .bubbly {
+            border: 4px dotted var(--bubble);
+            border-radius: 22px;
+        }
+        /* Animated waterdrops/bubbles */
+        .waterdrop {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 50%;
+            opacity: 0.10;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.10) 60%, transparent 100%),
+                        var(--bubble, #B3E5FC);
+            box-shadow: 0 2px 16px 0 rgba(33,150,243,0.08);
+        }
+        /* Place bubbles only on left/right sides, not center */
+        .waterdrop1 { left: 2vw; top: 8vh; width: 60px; height: 60px; background-color: #00B8D4; animation: float1 6s infinite linear; }
+        .waterdrop2 { left: 5vw; top: 60vh; width: 40px; height: 40px; background-color: #2196F3; animation: float2 5s infinite linear; }
+        .waterdrop3 { left: 90vw; top: 15vh; width: 70px; height: 70px; background-color: #B3E5FC; animation: float3 8s infinite linear; }
+        .waterdrop4 { left: 95vw; top: 70vh; width: 30px; height: 30px; background-color: #00B8D4; animation: float4 4.5s infinite linear; }
+        .waterdrop5 { left: 3vw; top: 80vh; width: 50px; height: 50px; background-color: #2196F3; animation: float5 6.5s infinite linear; }
+        .waterdrop6 { left: 92vw; top: 40vh; width: 35px; height: 35px; background-color: #00B8D4; animation: float6 5.5s infinite linear; }
+        .waterdrop7 { left: 7vw; top: 30vh; width: 55px; height: 55px; background-color: #B3E5FC; animation: float7 7s infinite linear; }
+        .waterdrop8 { left: 97vw; top: 55vh; width: 25px; height: 25px; background-color: #2196F3; animation: float8 6s infinite linear; }
+        .waterdrop9 { left: 1vw; top: 35vh; width: 30px; height: 30px; background-color: #B3E5FC; animation: float4 7.5s infinite linear; }
+        .waterdrop10 { left: 98vw; top: 10vh; width: 40px; height: 40px; background-color: #00B8D4; animation: float2 6.5s infinite linear; }
+        .waterdrop11 { left: 4vw; top: 90vh; width: 35px; height: 35px; background-color: #2196F3; animation: float3 8.5s infinite linear; }
+        .waterdrop12 { left: 93vw; top: 85vh; width: 45px; height: 45px; background-color: #B3E5FC; animation: float1 7s infinite linear; }
+        @keyframes float1 {
+            0% { transform: translateY(0) scale(1); opacity: 0.10; }
+            30% { transform: translateY(-30px) scale(1.08); opacity: 0.18; }
+            60% { transform: translateY(-60px) scale(1.12); opacity: 0.13; }
+            100% { transform: translateY(0) scale(1); opacity: 0.10; }
+        }
+        @keyframes float2 {
+            0% { transform: translateY(0) translateX(0); }
+            40% { transform: translateY(-20px) translateX(10px); }
+            80% { transform: translateY(-40px) translateX(-10px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        @keyframes float3 {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-50px) scale(1.15); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes float4 {
+            0% { transform: translateY(0) translateX(0); }
+            30% { transform: translateY(-10px) translateX(8px); }
+            60% { transform: translateY(-20px) translateX(-8px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        @keyframes float5 {
+            0% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-30px) scale(1.08); }
+            80% { transform: translateY(-60px) scale(1.12); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes float6 {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-25px) translateX(12px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        @keyframes float7 {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-40px) scale(1.1); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes float8 {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-15px) translateX(-10px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="waterdrop waterdrop1"></div>
+    <div class="waterdrop waterdrop2"></div>
+    <div class="waterdrop waterdrop3"></div>
+    <div class="waterdrop waterdrop4"></div>
+    <div class="waterdrop waterdrop5"></div>
+    <div class="waterdrop waterdrop6"></div>
+    <div class="waterdrop waterdrop7"></div>
+    <div class="waterdrop waterdrop8"></div>
+    <div class="waterdrop waterdrop9"></div>
+    <div class="waterdrop waterdrop10"></div>
+    <div class="waterdrop waterdrop11"></div>
+    <div class="waterdrop waterdrop12"></div>
+    <div style="position:fixed; left:95vw; top:22vh; z-index:0; opacity:0.13; animation: float2 15s infinite linear;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="24" cy="18" rx="14" ry="10" fill="#B3E5FC"/>
+        <ellipse cx="24" cy="18" rx="10" ry="7" fill="#81D4FA"/>
+        <path d="M14 28 Q16 38 12 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+        <path d="M20 28 Q22 38 18 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+        <path d="M28 28 Q26 38 30 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+        <path d="M34 28 Q32 38 36 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+    <div style="position:fixed; left:2vw; top:75vh; z-index:0; opacity:0.13; animation: float4 14s infinite linear;">
+      <span style="font-size:2.2rem;">⭐</span>
+    </div>
+    <div style="position:fixed; left:96vw; top:80vh; z-index:0; opacity:0.13; animation: float4 8s infinite linear;">
+      <span style="font-size:2.5rem;">⭐️</span>
+    </div>
+    <div style="position:fixed; left:6vw; top:50vh; z-index:0; opacity:0.13; animation: float6 16s infinite linear;">
+      <span style="font-size:2.2rem;">🥄</span>
+    </div>
+    <div style="position:fixed; left:1vw; top:60vh; z-index:0; opacity:0.13; animation: float2 7s infinite linear;">
+      <span style="font-size:2.5rem;">🐚</span>
+    </div>
+    <div style="position:fixed; left:94vw; top:5vh; z-index:0; opacity:0.13; animation: float1 8.5s infinite linear;">
+      <span style="font-size:2.5rem;">🥄</span>
+    </div>
+    <div style="position:fixed; left:7vw; top:15vh; z-index:0; opacity:0.13; animation: float5 10s infinite linear;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="24" cy="18" rx="14" ry="10" fill="#B3E5FC"/>
+        <ellipse cx="24" cy="18" rx="10" ry="7" fill="#81D4FA"/>
+        <path d="M14 28 Q16 38 12 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+        <path d="M20 28 Q22 38 18 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+        <path d="M28 28 Q26 38 30 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+        <path d="M34 28 Q32 38 36 44" stroke="#81D4FA" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+    <nav class="navbar navbar-expand-lg shadow-sm mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="/todos">
+                <span class="spongebob" style="margin-right:0.5em;vertical-align:middle;display:inline-block;">🧽</span> Sponge<span>Todo</span>
+            </a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <span class="dark-toggle" id="darkToggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </span>
+                {% if user %}
+                    <span class="navbar-text me-3">
+                        <i class="fas fa-user me-1"></i>{{ user.username }}
+                    </span>
+                    <a class="nav-link" href="/logout">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                {% else %}
+                    <a class="nav-link" href="/login">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </a>
+                    <a class="nav-link" href="/signup">
+                        <i class="fas fa-user-plus me-1"></i>Sign Up
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Dark mode toggle logic
+    const darkToggle = document.getElementById('darkToggle');
+    function setDarkMode(on) {
+        if (on) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', '1');
+            darkToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', '0');
+            darkToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+        }
+    }
+    darkToggle.onclick = function() {
+        setDarkMode(!document.body.classList.contains('dark-mode'));
+    };
+    // On load, set mode from localStorage
+    if (localStorage.getItem('darkMode') === '1') {
+        setDarkMode(true);
+    }
+    </script>
+</body>
+</html> 

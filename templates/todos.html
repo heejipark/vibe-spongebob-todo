@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}My Todos - SpongeTodo{% endblock %}
+
+{% block content %}
+<style>
+.spongebob-bg {
+    background: linear-gradient(135deg, #FFFDE4 0%, #B3E5FC 100%);
+    border-radius: 22px;
+    box-shadow: 0 4px 24px 0 rgba(255,235,59,0.18);
+}
+body.dark-mode .spongebob-bg {
+    background: linear-gradient(135deg, #0a2342 0%, #00B8D4 100%);
+}
+.spongebob-btn {
+    background: var(--primary);
+    color: #222;
+    font-family: 'Fredoka One', sans-serif;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border: none;
+    transition: background 0.2s, color 0.2s;
+}
+.spongebob-btn:hover {
+    background: var(--accent);
+    color: #fff;
+}
+.todo-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5em;
+}
+.bubbly-card {
+    border: 4px dotted var(--bubble);
+    border-radius: 22px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 8px 0 rgba(255,235,59,0.08);
+}
+.completed-card {
+    background: #ffe082 !important;
+    color: #888 !important;
+    opacity: 0.7;
+}
+body.dark-mode .completed-card {
+    background: #16335B !important;
+    color: #b3e5fc !important;
+}
+</style>
+<div class="row">
+    <div class="col-12">
+        <div class="card spongebob-bg mb-4 p-4 bubbly-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold mb-0" style="color:var(--primary);font-family:'Fredoka One',sans-serif;">
+                    <span style="font-size:2rem;">🧽</span> My Todos
+                </h2>
+                <a href="/calendar" class="btn btn-outline-primary spongebob-btn">
+                    <i class="fas fa-calendar-alt me-1"></i>Calendar View
+                </a>
+            </div>
+            <!-- Create Todo Form -->
+            <div class="card mb-4 p-3 bubbly-card" style="background:var(--background);">
+                <form method="POST" action="/todos">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label for="title" class="form-label">Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="icon" class="form-label">Icon</label>
+                            <select class="form-select" id="icon" name="icon">
+                                <option value="">📝 Default</option>
+                                <option value="💼">💼 Work</option>
+                                <option value="🏠">🏠 Home</option>
+                                <option value="🎯">🎯 Goal</option>
+                                <option value="📚">📚 Study</option>
+                                <option value="🏃">🏃 Exercise</option>
+                                <option value="🛒">🛒 Shopping</option>
+                                <option value="💰">💰 Finance</option>
+                                <option value="🎨">🎨 Creative</option>
+                                <option value="🔧">🔧 Maintenance</option>
+                                <option value="📞">📞 Call</option>
+                                <option value="✈️">✈️ Travel</option>
+                                <option value="🎉">🎉 Event</option>
+                                <option value="💡">💡 Idea</option>
+                                <option value="⚠️">⚠️ Important</option>
+                                <option value="⭐">⭐ Patrick</option>
+                                <option value="🪼">🪼 Jellyfish</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="priority" class="form-label">Priority</label>
+                            <select class="form-select" id="priority" name="priority">
+                                <option value="">No Priority</option>
+                                <option value="P0">P0 - Critical</option>
+                                <option value="P1">P1 - High</option>
+                                <option value="P2">P2 - Medium</option>
+                                <option value="P3">P3 - Low</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="deadline" class="form-label">Deadline</label>
+                            <input type="date" class="form-control" id="deadline" name="deadline" min="{{ now }}">
+                        </div>
+                        <div class="col-12">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn spongebob-btn px-4 py-2">
+                                <span style="font-size:1.3em;">🍍</span> Add Todo
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Sorting Options -->
+            <div class="card mb-4 p-3 bubbly-card" style="background:var(--background);">
+                <form method="get" action="/todos" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="sort_by" class="form-label">Sort By</label>
+                        <select class="form-select" id="sort_by" name="sort_by">
+                            <option value="created_at" {% if sort_by == "created_at" %}selected{% endif %}>Creation Time</option>
+                            <option value="title" {% if sort_by == "title" %}selected{% endif %}>Title (A-Z)</option>
+                            <option value="priority" {% if sort_by == "priority" %}selected{% endif %}>Priority</option>
+                            <option value="deadline" {% if sort_by == "deadline" %}selected{% endif %}>Deadline</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sort_order" class="form-label">Order</label>
+                        <select class="form-select" id="sort_order" name="sort_order">
+                            <option value="desc" {% if sort_order == "desc" %}selected{% endif %}>Descending</option>
+                            <option value="asc" {% if sort_order == "asc" %}selected{% endif %}>Ascending</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="icon_filter" class="form-label">Filter by Icon</label>
+                        <select class="form-select" name="icon_filter" id="icon_filter">
+                            <option value="">All Icons</option>
+                            <option value="📝" {% if icon_filter == '📝' %}selected{% endif %}>📝 Default</option>
+                            <option value="💼" {% if icon_filter == '💼' %}selected{% endif %}>💼 Work</option>
+                            <option value="🏠" {% if icon_filter == '🏠' %}selected{% endif %}>🏠 Home</option>
+                            <option value="🎯" {% if icon_filter == '🎯' %}selected{% endif %}>🎯 Goal</option>
+                            <option value="📚" {% if icon_filter == '📚' %}selected{% endif %}>📚 Study</option>
+                            <option value="🏃" {% if icon_filter == '🏃' %}selected{% endif %}>🏃 Exercise</option>
+                            <option value="🛒" {% if icon_filter == '🛒' %}selected{% endif %}>🛒 Shopping</option>
+                            <option value="💰" {% if icon_filter == '💰' %}selected{% endif %}>💰 Finance</option>
+                            <option value="🎨" {% if icon_filter == '🎨' %}selected{% endif %}>🎨 Creative</option>
+                            <option value="🔧" {% if icon_filter == '🔧' %}selected{% endif %}>🔧 Maintenance</option>
+                            <option value="📞" {% if icon_filter == '📞' %}selected{% endif %}>📞 Call</option>
+                            <option value="✈️" {% if icon_filter == '✈️' %}selected{% endif %}>✈️ Travel</option>
+                            <option value="🎉" {% if icon_filter == '🎉' %}selected{% endif %}>🎉 Event</option>
+                            <option value="💡" {% if icon_filter == '💡' %}selected{% endif %}>💡 Idea</option>
+                            <option value="⚠️" {% if icon_filter == '⚠️' %}selected{% endif %}>⚠️ Important</option>
+                            <option value="⭐" {% if icon_filter == '⭐' %}selected{% endif %}>⭐ Patrick</option>
+                            <option value="🪼" {% if icon_filter == '🪼' %}selected{% endif %}>🪼 Jellyfish</option>
+                        </select>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-outline-primary spongebob-btn px-4 py-2">
+                            <span style="font-size:1.2em;">🔍</span> Apply
+                        </button>
+                        <button type="submit" class="btn btn-outline-secondary ms-2 spongebob-btn px-4 py-2" name="reset" value="1">
+                            <span style="font-size:1.2em;">🔄</span> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- Todos List -->
+            {% if todos %}
+                <div class="todos-list">
+                    {% for todo in todos %}
+                    <div class="card todo-item mb-3 p-3 bubbly-card {% if todo.completed %}completed-card border-0{% endif %}" style="border-radius:18px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="card-title mb-1 d-flex align-items-center" style="font-weight:600;">
+                                    <span class="todo-icon">{{ todo.icon or '📝' }}</span>
+                                    {{ todo.title }}
+                                </h5>
+                                {% if todo.description %}
+                                <p class="card-text text-muted mb-1">{{ todo.description }}</p>
+                                {% endif %}
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Created: {{ todo.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                                {% if todo.deadline %}
+                                <br><small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Deadline: {{ todo.deadline }}
+                                </small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                {% if todo.priority %}
+                                <span class="badge rounded-pill px-3 py-2" style="background:var(--primary);color:#222;font-weight:600;">
+                                    {{ todo.priority.value }}
+                                </span>
+                                {% endif %}
+                                {% if todo.completed %}
+                                <span class="badge bg-success ms-2">
+                                    <i class="fas fa-check me-1"></i>Completed
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <form method="POST" action="/todos/{{ todo.id }}/toggle" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-warning spongebob-btn me-2">
+                                        <span style="font-size:1.2em;">🔄</span>
+                                    </button>
+                                </form>
+                                <a href="/todos/{{ todo.id }}/edit" class="btn btn-sm btn-info spongebob-btn me-2">
+                                    <span style="font-size:1.2em;">📝</span>
+                                </a>
+                                <form method="POST" action="/todos/{{ todo.id }}/delete" class="d-inline" 
+                                      onsubmit="return confirm('Are you sure you want to delete this todo?')">
+                                    <button type="submit" class="btn btn-sm btn-danger spongebob-btn">
+                                        <span style="font-size:1.2em;">🗑️</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center mt-4 bubbly-card">
+                    <span style="font-size:2em;">🍍</span> No todos yet. Add your first task!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

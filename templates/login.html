@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Login - SpongeTodo{% endblock %}
+
+{% block content %}
+<style>
+.spongebob-bg {
+    background: linear-gradient(135deg, #FFFDE4 0%, #B3E5FC 100%);
+    border-radius: 22px;
+    box-shadow: 0 4px 24px 0 rgba(255,235,59,0.18);
+}
+body.dark-mode .spongebob-bg {
+    background: linear-gradient(135deg, #0a2342 0%, #00B8D4 100%);
+}
+.spongebob-btn {
+    background: var(--primary);
+    color: #222;
+    font-family: 'Fredoka One', sans-serif;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border: none;
+    transition: background 0.2s, color 0.2s;
+}
+.spongebob-btn:hover {
+    background: var(--accent);
+    color: #fff;
+}
+</style>
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card spongebob-bg p-4 text-center">
+            <div class="mb-3">
+                <span style="font-size:3rem;">🧽</span>
+                <h2 class="fw-bold mt-2 mb-1" style="color:var(--primary);font-family:'Fredoka One',sans-serif;">SpongeTodo</h2>
+                <div class="text-muted mb-2" style="font-size:1.1rem;">Are you ready, kids? Log in to start your Bikini Bottom adventure!</div>
+            </div>
+            <form method="POST" action="/login">
+                <div class="mb-3 text-start">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required autocomplete="username">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+                </div>
+                <div class="d-grid mb-2">
+                    <button type="submit" class="spongebob-btn py-2">Log In</button>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="/signup" class="ms-1" style="color:var(--accent);text-decoration:none;font-weight:600;">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
