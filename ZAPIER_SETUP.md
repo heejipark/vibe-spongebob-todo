@@ -255,4 +255,20 @@ If you need help with:
 - **API issues:** Check the console logs in your todo app
 - **Email delivery:** Check your email provider's settings
 
-**Happy automating! 🧽✨** 
+**Happy automating! 🧽✨**
+
+---
+
+## ⚡️ New: AI-Driven Email Sending
+
+You can now request the AI assistant to send daily summary emails to all users at any time. Just ask the AI to "send the daily summary email" and it will:
+- Fetch the latest summary data from `/api/zapier-daily-summary`
+- Generate and send summary emails to each user using their registered email address
+
+**You do not need to set up Zapier automations for daily/weekly emails anymore unless you want to.**
+
+### Manual Email Sending Example
+- "Send the daily summary email to all users."
+- "Send a summary email to [user] for today."
+
+The API endpoints remain available for custom integrations, reporting, or advanced automations if you wish to use Zapier or other tools in the future. 
