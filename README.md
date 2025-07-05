@@ -161,6 +161,35 @@ You can now request the AI assistant to send daily summary emails to all users a
   - Completed todos
   - Completion rate
 
+### Example API Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "user_id": 1,
+      "user_name": "heejipark",
+      "email": "user@example.com",
+      "date": "2025-07-05",
+      "tasks_due_today": [
+        {"id": 1, "title": "Study Vibe Coding", "deadline": "2025-07-05", "completed": false},
+        {"id": 2, "title": "Go to the Trader Joe's", "deadline": "2025-07-05", "completed": true}
+      ],
+      "tasks_due_soon": [
+        {"id": 3, "title": "Take photo", "deadline": "2025-07-11", "completed": false}
+      ],
+      "total_todos": 3,
+      "completed_todos": 1,
+      "completion_rate": 33.3
+    }
+  ],
+  "date": "2025-07-05"
+}
+```
+
+### Privacy Note
+> This app sends summary emails to users using their registered email addresses. No email addresses or summary data are shared with third parties except for the configured email provider (e.g., Gmail via Zapier MCP).
+
 ### How to Use with Zapier (Optional)
 1. **Expose your app to the internet** (if running locally, use [ngrok](https://ngrok.com/)):
    ```bash
