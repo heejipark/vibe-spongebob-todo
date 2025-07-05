@@ -24,7 +24,6 @@ A playful, full-featured todo application with a SpongeBob SquarePants theme! Bu
 - **Priority Levels**: High, Medium, Low priority with color coding
 - **Deadline Support**: Optional due dates with visual indicators
 - **Icon Support**: Add emojis and custom icons to todos
-- **Google Calendar Sync**: Integrate with your Google Calendar
 
 ### 🔧 Technical Features
 - **FastAPI Backend**: Modern, fast Python web framework
@@ -91,13 +90,6 @@ A playful, full-featured todo application with a SpongeBob SquarePants theme! Bu
 
 ## 🛠️ Configuration
 
-### Google Calendar Integration
-To enable Google Calendar sync:
-
-1. Follow the setup guide in `GOOGLE_CALENDAR_SETUP.md`
-2. Add your Google Calendar credentials to the `.env` file
-3. Enable sync in the app settings
-
 ### Customization
 - **Theme Colors**: Modify CSS variables in `static/style.css`
 - **Database**: Change `DATABASE_URL` in `.env` for different databases
@@ -113,7 +105,6 @@ vibe-spongebob-todo/
 ├── database.py             # Database connection and session
 ├── models.py               # SQLAlchemy models
 ├── schemas.py              # Pydantic schemas
-├── google_calendar.py      # Google Calendar integration
 ├── requirements.txt        # Python dependencies
 ├── static/
 │   └── style.css          # Custom CSS styles

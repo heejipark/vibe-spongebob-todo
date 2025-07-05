@@ -37,7 +37,6 @@ class TodoUpdate(BaseModel):
 class Todo(TodoBase):
     id: int
     completed: bool
-    google_calendar_id: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     user_id: int

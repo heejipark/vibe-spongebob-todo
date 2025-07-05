@@ -67,61 +67,23 @@ def create_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
-    
-    # Sync with Google Calendar if deadline is set
-    if db_todo.deadline:
-        try:
-            from google_calendar import calendar_manager
-            success, result = calendar_manager.create_event(db_todo)
-            if success:
-                db_todo.google_calendar_id = result
-                db.commit()
-                db.refresh(db_todo)
-        except Exception as e:
-            # Log error but don't fail the todo creation
-            print(f"Google Calendar sync failed: {e}")
-    
     return db_todo
 
 def update_todo(db: Session, todo_id: int, todo_update: schemas.TodoUpdate, user_id: int):
     db_todo = get_todo(db, todo_id, user_id)
     if not db_todo:
         return None
-    
     update_data = todo_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(db_todo, field, value)
-    
     db.commit()
     db.refresh(db_todo)
-    
-    # Sync with Google Calendar if deadline is set
-    if db_todo.deadline:
-        try:
-            from google_calendar import calendar_manager
-            success, result = calendar_manager.update_event(db_todo)
-            if success:
-                db_todo.google_calendar_id = result
-                db.commit()
-                db.refresh(db_todo)
-        except Exception as e:
-            print(f"Google Calendar sync failed: {e}")
-    
     return db_todo
 
 def delete_todo(db: Session, todo_id: int, user_id: int):
     db_todo = get_todo(db, todo_id, user_id)
     if not db_todo:
         return False
-    
-    # Delete from Google Calendar if synced
-    if db_todo.google_calendar_id:
-        try:
-            from google_calendar import calendar_manager
-            calendar_manager.delete_event(db_todo.google_calendar_id)
-        except Exception as e:
-            print(f"Google Calendar deletion failed: {e}")
-    
     db.delete(db_todo)
     db.commit()
     return True

@@ -31,7 +31,6 @@ class Todo(Base):
     priority = Column(Enum(PriorityEnum), nullable=True)
     deadline = Column(String, nullable=True)  # Store as string "YYYY-MM-DD"
     icon = Column(String, nullable=True)  # Store emoji or icon name
-    google_calendar_id = Column(String, nullable=True)  # Google Calendar event ID
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     user_id = Column(Integer, ForeignKey("users.id"))
